@@ -1,0 +1,103 @@
+/* Theme Toggle Button */
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 4px 16px var(--glass-shadow);
+  cursor: pointer;
+  z-index: 1000;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+}
+
+.theme-toggle:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 24px var(--glass-shadow);
+}
+
+.theme-toggle:active {
+  transform: scale(0.95);
+}
+
+/* Sun and Moon icons */
+.theme-toggle i {
+  font-size: 20px;
+  position: absolute;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Dark mode: show sun, hide moon */
+[data-theme="dark"] .theme-toggle .fa-sun {
+  opacity: 1;
+  transform: rotate(0deg);
+}
+
+[data-theme="dark"] .theme-toggle .fa-moon {
+  opacity: 0;
+  transform: rotate(180deg);
+}
+
+/* Light mode: hide sun, show moon */
+[data-theme="light"] .theme-toggle .fa-sun {
+  opacity: 0;
+  transform: rotate(-180deg);
+}
+
+[data-theme="light"] .theme-toggle .fa-moon {
+  opacity: 1;
+  transform: rotate(0deg);
+}
+
+/* Light mode specific adjustments */
+[data-theme="light"] .background {
+  background: linear-gradient(
+    180deg,
+    var(--bg-primary) 0%,
+    #F0F4FF 50%,
+    var(--bg-primary) 100%
+  );
+}
+
+[data-theme="light"] .orb-1 {
+  background: radial-gradient(circle, rgba(0, 122, 255, 0.08), transparent);
+}
+
+[data-theme="light"] .orb-2 {
+  background: radial-gradient(circle, rgba(51, 149, 255, 0.06), transparent);
+}
+
+[data-theme="light"] .orb-3 {
+  background: radial-gradient(circle, rgba(0, 81, 213, 0.07), transparent);
+}
+
+/* Light mode logo */
+[data-theme="light"] h1 {
+  background: linear-gradient(135deg, #000000 0%, var(--primary) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .theme-toggle {
+    width: 44px;
+    height: 44px;
+    top: 15px;
+    right: 15px;
+  }
+  
+  .theme-toggle i {
+    font-size: 18px;
+  }
+}

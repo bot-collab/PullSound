@@ -1,0 +1,153 @@
+============================= test session starts =============================
+platform win32 -- Python 3.13.7, pytest-9.0.2, pluggy-1.6.0 -- C:\Users\USUARIO\Documents\spydonw\.spydonw\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\USUARIO\Documents\spydonw\backend
+configfile: pytest.ini
+plugins: cov-7.0.0, flask-1.3.0, mock-3.15.1
+collecting ... collected 32 items
+
+tests/integration/test_api_download.py::TestAPIDownload::test_download_endpoint_requires_url PASSED [  3%]
+tests/integration/test_api_download.py::TestAPIDownload::test_download_endpoint_requires_format FAILED [  6%]
+tests/integration/test_api_download.py::TestAPIDownload::test_download_endpoint_requires_quality FAILED [  9%]
+tests/integration/test_api_download.py::TestAPIDownload::test_download_endpoint_invalid_format PASSED [ 12%]
+tests/integration/test_api_download.py::TestAPIDownload::test_download_endpoint_invalid_quality PASSED [ 15%]
+tests/integration/test_api_download.py::TestAPIDownload::test_download_endpoint_creates_task_id PASSED [ 18%]
+tests/integration/test_api_health.py::TestAPIHealth::test_health_endpoint_exists PASSED [ 21%]
+tests/integration/test_api_health.py::TestAPIHealth::test_health_endpoint_structure PASSED [ 25%]
+tests/integration/test_api_health.py::TestAPIHealth::test_health_status_healthy PASSED [ 28%]
+tests/integration/test_api_health.py::TestAPIHealth::test_health_ffmpeg_check PASSED [ 31%]
+tests/integration/test_api_info.py::TestAPIInfo::test_info_endpoint_requires_url PASSED [ 34%]
+tests/integration/test_api_info.py::TestAPIInfo::test_info_endpoint_invalid_json PASSED [ 37%]
+tests/integration/test_api_info.py::TestAPIInfo::test_info_endpoint_empty_url PASSED [ 40%]
+tests/integration/test_api_info.py::TestAPIInfo::test_info_endpoint_invalid_url_format PASSED [ 43%]
+tests/integration/test_api_info.py::TestAPIInfo::test_info_endpoint_non_youtube_url PASSED [ 46%]
+tests/integration/test_api_info.py::TestAPIInfo::test_info_endpoint_valid_youtube_url PASSED [ 50%]
+tests/integration/test_static_files.py::TestStaticFiles::test_index_page PASSED [ 53%]
+tests/integration/test_static_files.py::TestStaticFiles::test_robots_txt PASSED [ 56%]
+tests/integration/test_static_files.py::TestStaticFiles::test_sitemap_xml PASSED [ 59%]
+tests/integration/test_static_files.py::TestStaticFiles::test_og_image PASSED [ 62%]
+tests/integration/test_static_files.py::TestStaticFiles::test_favicon PASSED [ 65%]
+tests/unit/test_config.py::TestConfig::test_import_config PASSED         [ 68%]
+tests/unit/test_config.py::TestConfig::test_audio_formats_structure PASSED [ 71%]
+tests/unit/test_config.py::TestConfig::test_quality_threshold PASSED     [ 75%]
+tests/unit/test_config.py::TestConfig::test_ytdlp_options_base PASSED    [ 78%]
+tests/unit/test_config.py::TestConfig::test_directories_structure PASSED [ 81%]
+tests/unit/test_config.py::TestConfig::test_rate_limits PASSED           [ 84%]
+tests/unit/test_config.py::TestConfig::test_project_info PASSED          [ 87%]
+tests/unit/test_security.py::TestSecurity::test_path_traversal_prevention PASSED [ 90%]
+tests/unit/test_security.py::TestSecurity::test_url_whitelist PASSED     [ 93%]
+tests/unit/test_security.py::TestSecurity::test_secret_key_not_default PASSED [ 96%]
+tests/unit/test_security.py::TestSecurity::test_csrf_disabled_in_testing PASSED [100%]
+ERROR: Coverage failure: total of 46 is less than fail-under=70
+
+
+================================== FAILURES ===================================
+___________ TestAPIDownload.test_download_endpoint_requires_format ____________
+
+self = <tests.integration.test_api_download.TestAPIDownload object at 0x00000223B8D739D0>
+client = <FlaskClient <Flask 'server'>>
+mock_youtube_url = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
+
+    def test_download_endpoint_requires_format(self, client, mock_youtube_url):
+        """Test que requiere formato"""
+        response = client.post('/api/download',
+            json={'url': mock_youtube_url, 'quality': '128'},
+            content_type='application/json'
+        )
+    
+>       assert response.status_code == 400
+E       assert 200 == 400
+E        +  where 200 = <WrapperTestResponse streamed [200 OK]>.status_code
+
+tests\integration\test_api_download.py:27: AssertionError
+---------------------------- Captured stderr call -----------------------------
+2025-12-26 21:22:06,659 - INFO - Nueva solicitud de descarga: https://www.youtube.com/watch?v=dQw4w9WgXcQ... - mp3 - 128kbps
+2025-12-26 21:22:06,660 - INFO - [19a27dbc-9c21-47b4-8b79-77ca2413bedd] Tarea encolada. Cola: 1
+2025-12-26 21:22:06,660 - INFO - [19a27dbc-9c21-47b4-8b79-77ca2413bedd] 0% - Iniciando proceso...
+2025-12-26 21:22:06,662 - INFO - [19a27dbc-9c21-47b4-8b79-77ca2413bedd] 5% - Preparando descarga...
+2025-12-26 21:22:06,663 - INFO - [19a27dbc-9c21-47b4-8b79-77ca2413bedd] 5% - Obteniendo información del video...
+------------------------------ Captured log call ------------------------------
+INFO     server:server.py:1172 Nueva solicitud de descarga: https://www.youtube.com/watch?v=dQw4w9WgXcQ... - mp3 - 128kbps
+INFO     server:server.py:1182 [19a27dbc-9c21-47b4-8b79-77ca2413bedd] Tarea encolada. Cola: 1
+INFO     server:server.py:438 [19a27dbc-9c21-47b4-8b79-77ca2413bedd] 0% - Iniciando proceso...
+INFO     server:server.py:438 [19a27dbc-9c21-47b4-8b79-77ca2413bedd] 5% - Preparando descarga...
+INFO     server:server.py:438 [19a27dbc-9c21-47b4-8b79-77ca2413bedd] 5% - Obteniendo información del video...
+___________ TestAPIDownload.test_download_endpoint_requires_quality ___________
+
+self = <tests.integration.test_api_download.TestAPIDownload object at 0x00000223B8ED0D60>
+client = <FlaskClient <Flask 'server'>>
+mock_youtube_url = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
+
+    def test_download_endpoint_requires_quality(self, client, mock_youtube_url):
+        """Test que requiere calidad"""
+        response = client.post('/api/download',
+            json={'url': mock_youtube_url, 'format': 'mp3'},
+            content_type='application/json'
+        )
+    
+>       assert response.status_code == 400
+E       assert 200 == 400
+E        +  where 200 = <WrapperTestResponse streamed [200 OK]>.status_code
+
+tests\integration\test_api_download.py:36: AssertionError
+---------------------------- Captured stderr call -----------------------------
+ - 320kbps
+2025-12-26 21:22:09,247 - INFO - [671e07c7-e4ab-48d7-84cb-198cc2c96064] Tarea encolada. Cola: 1
+2025-12-26 21:22:09,247 - INFO - [671e07c7-e4ab-48d7-84cb-198cc2c96064] 0% - Iniciando proceso...
+2025-12-26 21:22:09,249 - INFO - [671e07c7-e4ab-48d7-84cb-198cc2c96064] 5% - Preparando descarga...
+------------------------------ Captured log call ------------------------------
+INFO     server:server.py:1172 Nueva solicitud de descarga: https://www.youtube.com/watch?v=dQw4w9WgXcQ... - mp3 - 320kbps
+INFO     server:server.py:1182 [671e07c7-e4ab-48d7-84cb-198cc2c96064] Tarea encolada. Cola: 1
+INFO     server:server.py:438 [671e07c7-e4ab-48d7-84cb-198cc2c96064] 0% - Iniciando proceso...
+INFO     server:server.py:438 [671e07c7-e4ab-48d7-84cb-198cc2c96064] 5% - Preparando descarga...
+INFO     server:server.py:438 [671e07c7-e4ab-48d7-84cb-198cc2c96064] 5% - Obteniendo información del video...
+=============================== tests coverage ================================
+_______________ coverage: platform win32, python 3.13.7-final-0 _______________
+
+Name                                     Stmts   Miss  Cover   Missing
+----------------------------------------------------------------------
+config.py                                   30      0   100%
+server.py                                  804    549    32%   28-32, 81-91, 98, 148, 155, 160, 165, 170, 174, 178-179, 188-199, 206-221, 226-234, 248, 267, 293-304, 311-342, 355, 359-360, 365-366, 373, 389-409, 413-418, 439-440, 460-463, 469-509, 515-545, 553, 582-769, 779, 783-786, 804-816, 829-831, 839-841, 848-850, 858-860, 870, 880-927, 931-1024, 1029-1090, 1095-1128, 1135, 1148, 1169-1170, 1191-1194, 1199-1210, 1215-1255, 1260-1323, 1354-1395, 1401-1422, 1434-1435, 1439-1445, 1450-1471
+tests\__init__.py                            0      0   100%
+tests\conftest.py                           35     10    71%   29, 35-42, 54, 60
+tests\integration\__init__.py                0      0   100%
+tests\integration\test_api_download.py      24      0   100%
+tests\integration\test_api_health.py        21      0   100%
+tests\integration\test_api_info.py          27      2    93%   70-71
+tests\integration\test_static_files.py      21      0   100%
+tests\unit\__init__.py                       0      0   100%
+tests\unit\test_config.py                   46      1    98%   56
+tests\unit\test_security.py                 28      2    93%   43-44
+----------------------------------------------------------------------
+TOTAL                                     1036    564    46%
+Coverage HTML written to dir htmlcov
+FAIL Required test coverage of 70% not reached. Total coverage: 45.56%
+=========================== short test summary info ===========================
+FAILED tests/integration/test_api_download.py::TestAPIDownload::test_download_endpoint_requires_format - assert 200 == 400
+ +  where 200 = <WrapperTestResponse streamed [200 OK]>.status_code
+FAILED tests/integration/test_api_download.py::TestAPIDownload::test_download_endpoint_requires_quality - assert 200 == 400
+ +  where 200 = <WrapperTestResponse streamed [200 OK]>.status_code
+======================== 2 failed, 30 passed in 4.26s =========================
+[youtube] Extracting URL: https://www.youtube.com/watch?v=dQw4w9WgXcQ
+[youtube] dQw4w9WgXcQ: Downloading webpage
+[youtube] Extracting URL: https://www.youtube.com/watch?v=dQw4w9WgXcQ
+[youtube] dQw4w9WgXcQ: Downloading webpage
+[youtube] Extracting URL: https://www.youtube.com/watch?v=dQw4w9WgXcQ
+[youtube] dQw4w9WgXcQ: Downloading webpage
+[youtube] dQw4w9WgXcQ: Downloading android player API JSON
+[info] dQw4w9WgXcQ: Downloading 1 format(s): 18
+Deleting existing file C:\Users\USUARIO\Documents\spydonw\backend\downloads\Rick Astley - Never Gonna Give You Up (Official Video) (4K Remaster).webp
+[info] Downloading video thumbnail 41 ...
+[youtube] dQw4w9WgXcQ: Downloading android player API JSON
+[youtube] dQw4w9WgXcQ: Downloading android player API JSON
+[info] Writing video thumbnail 41 to: C:\Users\USUARIO\Documents\spydonw\backend\downloads\Rick Astley - Never Gonna Give You Up (Official Video) (4K Remaster).webp
+[info] dQw4w9WgXcQ: Downloading 1 format(s): 18
+Deleting existing file C:\Users\USUARIO\Documents\spydonw\backend\downloads\Rick Astley - Never Gonna Give You Up (Official Video) (4K Remaster).webp
+[info] dQw4w9WgXcQ: Downloading 1 format(s): 18
+[download] Sleeping 4.00 seconds as required by the site...
+Deleting existing file C:\Users\USUARIO\Documents\spydonw\backend\downloads\Rick Astley - Never Gonna Give You Up (Official Video) (4K Remaster).webp
+[info] Downloading video thumbnail 41 ...
+[info] Writing video thumbnail 41 to: C:\Users\USUARIO\Documents\spydonw\backend\downloads\Rick Astley - Never Gonna Give You Up (Official Video) (4K Remaster).webp
+[download] Sleeping 5.00 seconds as required by the site...
+[download] Resuming download at byte 13181387
+[download] Resuming download at byte 13181387

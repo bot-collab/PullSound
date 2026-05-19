@@ -1,0 +1,6 @@
+projectKey=PullSound
+serverUrl=http://localhost:9000
+serverVersion=25.10.0.114319
+dashboardUrl=http://localhost:9000/dashboard?id=PullSound
+ceTaskId=25d7f714-8884-4826-996e-07bb683972e5
+ceTaskUrl=http://localhost:9000/api/ce/task?id=25d7f714-8884-4826-996e-07bb683972e5

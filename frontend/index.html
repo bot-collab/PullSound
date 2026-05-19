@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+        <!-- Google Tag Manager -->
+        <script>
+            (function(w,d,s,l,i){
+                w[l]=w[l]||[];
+                w[l].push({'gtm.start': Date.now(), event:'gtm.js'});
+                var f=d.getElementsByTagName(s)[0];
+                var j=d.createElement(s);
+                var dl = (l === 'dataLayer') ? '' : '&l='+l;
+                j.async=true;
+                j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
+                f.parentNode.insertBefore(j,f);
+            })(globalThis,document,'script','dataLayer','GTM-N8BNKCQF');
+        </script>
+        <!-- End Google Tag Manager -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="theme-color" content="#667eea">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="description" content="Convierte videos de YouTube a MP3, FLAC o WAV con PullSound. Descarga gratis, segura y rapida en alta calidad.">
+    <meta name="author" content="3sc0b0t">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="keywords" content="convertidor youtube mp3, descargar audio youtube, convertir playlist youtube, mp3 320 kbps, convertidor flac wav, descargar musica gratis, youtube a opus, youtube a m4a, convertidor sonido, audio alta calidad">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="es">
+    <meta property="og:locale" content="es_ES">
+    <meta name="revisit-after" content="7 days">
+    <link rel="canonical" href="https://pullsound.onrender.com">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://pullsound.onrender.com">
+    <meta property="og:title" content="PullSound - Convertidor de YouTube a MP3 | Audio de alta calidad">
+    <meta property="og:description" content="Convierte YouTube a MP3, FLAC o WAV. Descarga playlists, previsualiza audio y elige hasta 320 kbps. Gratis y rapido.">
+    <meta property="og:image" content="https://pullsound.onrender.com/og-image.png">
+    <meta property="og:image:secure_url" content="https://pullsound.onrender.com/og-image.png">
+    <meta property="og:image:alt" content="Banner de PullSound como convertidor de YouTube a MP3">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="fb:app_id" content=""> <!-- Opcional: coloca tu App ID de Facebook si lo tienes -->
+    <meta property="og:site_name" content="PullSound">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://pullsound.onrender.com">
+    <meta name="twitter:title" content="PullSound - Convertidor de YouTube a MP3">
+    <meta name="twitter:description" content="Convierte YouTube a MP3, FLAC o WAV. Gratis, rapido y en alta calidad.">
+    <meta name="twitter:image" content="https://pullsound.onrender.com/twitter-card.png">
+    <meta name="twitter:image:alt" content="Banner de PullSound como convertidor de YouTube a MP3">
+    
+    <!-- Additional Meta -->
+    <meta name="rating" content="General">
+    <meta name="distribution" content="Global">
+    
+    <title>PullSound - Convertidor de YouTube a MP3 | Descarga de audio en alta calidad</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    
+    <!-- Google Fonts: Space Grotesk + Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <link rel="stylesheet" href="styles.css?v=6">
+    <link rel="stylesheet" href="theme-toggle.css?v=2">
+    <link rel="stylesheet" href="light-mode-overrides.css?v=2">
+    <link rel="stylesheet" href="visual-enhancements.css?v=2">
+    
+    <!-- Socket.IO Client -->
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    
+    <!-- Schema.org JSON-LD -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+    "name": "PullSound",
+    "alternateName": "Convertidor de YouTube a MP3",
+      "url": "https://pullsound.onrender.com",
+    "description": "Herramienta en linea gratis para convertir videos de YouTube a audio MP3, FLAC, WAV con alta calidad",
+    "inLanguage": "es",
+    "image": "https://pullsound.onrender.com/og-image.png",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "Web Browser",
+      "browserRequirements": "Requires JavaScript",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+                "priceCurrency": "USD"
+      },
+      "creator": {
+        "@type": "Person",
+        "name": "3sc0b0t"
+      },
+      "featureList": [
+                "Conversion de YouTube a MP3",
+                "Descarga de playlists",
+                "Multiples formatos de audio (MP3, FLAC, WAV, M4A, OPUS)",
+                "Previsualizacion de audio antes de descargar",
+                "Calidad alta hasta 320kbps"
+      ]
+    }
+    </script>
+
+</head>
+<body data-theme="dark">
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-N8BNKCQF"
+    height="0" width="0" title="Google Tag Manager"
+    style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    <!-- Theme Toggle Button -->
+    <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">
+        <i class="fas fa-sun"></i>
+        <i class="fas fa-moon"></i>
+    </button>
+    
+    <div class="background">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+    </div>
+
+    <div class="container">
+        <div class="glass-card main-card">
+            <div class="header">
+                <div class="icon-container">
+                    <!-- PullSound Logo - Circular Wave Design -->
+                    <svg width="60" height="60" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#FF6B35;stop-opacity:1" />
+                                <stop offset="40%" style="stop-color:#F72585;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#FFA500;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        
+                        <!-- Outer curved waves (forming C shape) -->
+                        <path d="M 75,25 A 30 30 0 0 1 75,75" 
+                              stroke="url(#logoGradient)" 
+                              stroke-width="3" 
+                              fill="none"
+                              stroke-linecap="round"/>
+                        <path d="M 70,28 A 25 25 0 0 1 70,72" 
+                              stroke="url(#logoGradient)" 
+                              stroke-width="2.5" 
+                              fill="none"
+                              stroke-linecap="round"
+                              opacity="0.85"/>
+                        <path d="M 65,31 A 20 20 0 0 1 65,69" 
+                              stroke="url(#logoGradient)" 
+                              stroke-width="2.5" 
+                              fill="none"
+                              stroke-linecap="round"
+                              opacity="0.75"/>
+                        <path d="M 60,34 A 15 15 0 0 1 60,66" 
+                              stroke="url(#logoGradient)" 
+                              stroke-width="2" 
+                              fill="none"
+                              stroke-linecap="round"
+                              opacity="0.65"/>
+                        
+                        <!-- Sound bars (center) -->
+                        <rect x="35" y="45" width="2" height="10" fill="url(#logoGradient)" rx="1" opacity="0.7"/>
+                        <rect x="39" y="40" width="2" height="20" fill="url(#logoGradient)" rx="1" opacity="0.75"/>
+                        <rect x="43" y="35" width="2" height="30" fill="url(#logoGradient)" rx="1"/>
+                        <rect x="47" y="38" width="2" height="24" fill="url(#logoGradient)" rx="1" opacity="0.85"/>
+                        <rect x="51" y="42" width="2" height="16" fill="url(#logoGradient)" rx="1" opacity="0.75"/>
+                        <rect x="55" y="44" width="2" height="12" fill="url(#logoGradient)" rx="1" opacity="0.7"/>
+                        
+                        <!-- Arrow (top right) -->
+                        <path d="M 72,20 Q 78,18 82,22 L 85,28 Q 84,32 80,34 L 75,38 Q 73,36 74,33 L 78,28 Q 75,26 72,28 Z" 
+                              fill="url(#logoGradient)"
+                              opacity="0.95"/>
+                    </svg>
+                </div>
+                <h1>PullSound</h1>
+                <p class="subtitle">Download audio from YouTube, SoundCloud & more</p>
+            </div>
+
+            <div class="input-section">
+                <div class="glass-input-container">
+                    <i class="fas fa-link input-icon"></i>
+                    <input 
+                        type="text" 
+                        id="youtubeUrl" 
+                        placeholder="Pega aquí la URL de YouTube..."
+                        class="glass-input"
+                        autocomplete="off"
+                        autocorrect="off"
+                        autocapitalize="off"
+                        spellcheck="false"
+                    >
+                    <button class="btn-clear" id="clearBtn" style="display: none;" aria-label="Limpiar">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="video-preview" id="videoPreview" style="display: none;">
+                <img id="thumbnail" src="" alt="Thumbnail del video" loading="lazy">
+                <div class="video-info">
+                    <h3 id="videoTitle">Información del video</h3>
+                    <p id="videoMeta"></p>
+                </div>
+            </div>
+
+            <div class="playlist-section" id="playlistSection" style="display: none;">
+                <div class="playlist-header">
+                    <h3><i class="fas fa-list"></i> Contenido de la Playlist</h3>
+                    <button class="option-btn" id="downloadAllBtn">
+                        <i class="fas fa-download"></i> Descargar Todo
+                    </button>
+                </div>
+                <div class="playlist-container" id="playlistContainer">
+                    <!-- Playlist items will be injected here -->
+                </div>
+            </div>
+
+            <div class="options-section">
+                <div class="option-group">
+                    <label class="option-label" for="format-mp3">
+                        <i class="fas fa-file-audio"></i>
+                        Formato de Audio
+                    </label>
+                    <div class="button-group format-group">
+                        <button id="format-mp3" class="option-btn active" data-format="mp3" aria-label="Formato MP3">MP3</button>
+                        <button class="option-btn" data-format="flac" aria-label="Formato FLAC">FLAC</button>
+                        <button class="option-btn" data-format="wav" aria-label="Formato WAV">WAV</button>
+                        <button class="option-btn" data-format="m4a" aria-label="Formato M4A">M4A</button>
+                        <button class="option-btn" data-format="opus" aria-label="Formato OPUS">OPUS</button>
+                    </div>
+                </div>
+
+                <div class="option-group" id="qualitySection">
+                    <label class="option-label" for="quality-128">
+                        <i class="fas fa-signal"></i>
+                        Calidad de Audio
+                    </label>
+                    <div class="button-group quality-group">
+                        <button id="quality-128" class="option-btn active" data-quality="128" aria-label="128 kbps">128 kbps</button>
+                        <button class="option-btn" data-quality="192" aria-label="192 kbps">192 kbps</button>
+                        <button class="option-btn" data-quality="256" aria-label="256 kbps">256 kbps</button>
+                        <button class="option-btn" data-quality="320" aria-label="320 kbps">320 kbps</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <!-- Preview button removed - now on thumbnails -->
+                <button class="btn-primary btn-convert" id="convertBtn" aria-label="Convertir y descargar">
+                    <i class="fas fa-download"></i>
+                    <span>Convertir y Descargar</span>
+                    <div class="btn-glow"></div>
+                </button>
+            </div>
+
+            <div class="progress-container" id="progressContainer" style="display: none;">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <p class="progress-text" id="progressText">Procesando...</p>
+                <div style="text-align: center; margin-top: 10px;">
+                    <button class="option-btn" id="cancelDownloadBtn" style="background: rgba(255,50,50,0.2); font-size: 0.8em; padding: 5px 15px;">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEO Content (Hidden but indexable) -->
+        <section class="seo-content" style="position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden;" aria-hidden="true">
+            <h2>Convertidor gratuito de YouTube a MP3 en linea</h2>
+            <p>PullSound es un convertidor gratuito de YouTube a MP3 que te permite descargar y convertir videos de YouTube a formatos de audio de alta calidad. Convierte playlists de YouTube a MP3, FLAC, WAV, M4A u OPUS con facilidad.</p>
+            
+            <h3>Formatos de audio compatibles</h3>
+            <ul>
+                <li>MP3 - Hasta 320 kbps de calidad</li>
+                <li>FLAC - Compresion de audio sin perdida</li>
+                <li>WAV - Audio sin comprimir y de alta calidad</li>
+                <li>M4A - Advanced Audio Coding</li>
+                <li>OPUS - Codec moderno</li>
+            </ul>
+            
+            <h3>Funciones principales</h3>
+            <ul>
+                <li>Descarga masiva de playlists de YouTube</li>
+                <li>Previsualizacion de audio antes de descargar</li>
+                <li>Progreso de conversion en tiempo real</li>
+                <li>No requiere registro</li>
+                <li>Procesamiento rapido y seguro</li>
+            </ul>
+        </section>
+
+        <div class="footer-info">
+            <p>Desarrollado por <strong>3sc0b0t</strong> • 2025</p>
+        </div>
+    </div>
+
+    <section class="seo-copy" aria-label="Descripción del servicio" style="max-width:960px;margin:32px auto;padding:0 16px;color:#e5e7eb;">
+        <h2 style="font-size:1.25rem;font-weight:600;margin-bottom:8px;">Convierte y descarga audio en alta calidad</h2>
+        <p style="line-height:1.6;">PullSound te permite convertir videos de YouTube a MP3, FLAC, WAV, M4A u OPUS, con previsualización de audio, descarga de playlists y ajustes de calidad hasta 320 kbps. Funciona en navegador, sin instalar nada, y optimiza la entrega de archivos para que obtengas tus descargas rápido y con buena calidad.</p>
+    </section>
+
+    <!-- Phase 1 & 2 Modules - Load script.js FIRST (defines global variables) -->
+    <script src="script.js?v=5"></script>
+    <script src="ux-modules.js?v=2"></script>
+    <script src="visual-enhancements.js?v=2"></script>
+    <script src="feature-modules.js?v=3"></script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            // Fixed: use relative path for file:// compatibility
+            navigator.serviceWorker.register('./service-worker.js')
+                .catch(() => {});
+        });
+    }
+    
+    // PWA Install Prompt
+    let deferredPrompt;
+    globalThis.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        
+        // Show custom install UI if exists
+        const installBtn = document.getElementById('installBtn');
+        if (installBtn) {
+            installBtn.style.display = 'block';
+            installBtn.addEventListener('click', async () => {
+                if (!deferredPrompt) return;
+                deferredPrompt.prompt();
+                await deferredPrompt.userChoice;
+                deferredPrompt = null;
+                installBtn.style.display = 'none';
+            });
+        }
+    });
+    
+    // PWA Installed
+    globalThis.addEventListener('appinstalled', (e) => {
+        deferredPrompt = null;
+    });
+    </script>
+</body>
+</html>

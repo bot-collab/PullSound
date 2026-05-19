@@ -1,0 +1,28 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="favGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#764ba2;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f093fb;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background rounded square -->
+  <rect width="64" height="64" rx="14" fill="url(#favGradient)"/>
+  
+  <!-- Sound wave (white) -->
+  <path d="M 12,32 Q 20,20 28,32 Q 36,44 44,32" 
+        stroke="white" 
+        stroke-width="4.5" 
+        fill="none"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+  
+  <!-- Download arrow (white) -->
+  <path d="M 50,20 L 50,44 M 44,38 L 50,44 L 56,38" 
+        stroke="white" 
+        stroke-width="4.5" 
+        fill="none"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+</svg>

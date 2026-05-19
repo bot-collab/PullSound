@@ -1,0 +1,235 @@
+/* ========== RIPPLE EFFECT ========== */
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.6);
+    transform: scale(0);
+    animation: ripple-animation 0.6s ease-out;
+    pointer-events: none;
+}
+
+@keyframes ripple-animation {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+/* Make buttons relative for ripple positioning */
+button, .option-btn, .btn-download {
+    position: relative;
+    overflow: hidden;
+}
+
+/* ========== SMOOTH TRANSITIONS ========== */
+.fade-in {
+    animation: fadeIn 0.3s ease-in forwards;
+}
+
+.fade-out {
+    animation: fadeOut 0.3s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
+/* ========== ENHANCED STATE INDICATORS ========== */
+.state-indicator {
+    position: fixed;
+    bottom: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(15, 15, 30, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    padding: 15px 25px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 10000;
+    transition: bottom 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.state-indicator.show {
+    bottom: 30px;
+}
+
+.state-indicator i {
+    font-size: 1.2rem;
+}
+
+.state-indicator span {
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.state-indicator.state-success {
+    border-color: rgba(72, 187, 120, 0.5);
+}
+
+.state-indicator.state-success i {
+    color: #48bb78;
+}
+
+.state-indicator.state-error {
+    border-color: rgba(245, 101, 101, 0.5);
+}
+
+.state-indicator.state-error i {
+    color: #f56565;
+}
+
+.state-indicator.state-warning {
+    border-color: rgba(237, 137, 54, 0.5);
+}
+
+.state-indicator.state-warning i {
+    color: #ed8936;
+}
+
+.state-indicator.state-info {
+    border-color: rgba(66, 153, 225, 0.5);
+}
+
+.state-indicator.state-info i {
+    color: #4299e1;
+}
+
+/* ========== PULSE ANIMATION FOR DOWNLOADING ========== */
+@keyframes pulse {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(103, 126, 234, 0.7);
+    }
+    50% {
+        box-shadow: 0 0 0 10px rgba(103, 126, 234, 0);
+    }
+}
+
+.downloading {
+    animation: pulse 2s infinite;
+}
+
+/* ========== ENHANCED PROGRESS BAR ========== */
+.progress-fill {
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    background-size: 200% 100%;
+    animation: gradient-shift 2s ease infinite;
+    transition: width 0.3s ease;
+}
+
+@keyframes gradient-shift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* ========== BUTTON HOVER ENHANCEMENTS ========== */
+.option-btn, .btn-download {
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.option-btn:hover, .btn-download:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(103, 126, 234, 0.4);
+}
+
+.option-btn:active, .btn-download:active {
+    transform: translateY(0);
+}
+
+/* ========== PLAYLIST ITEM ANIMATIONS ========== */
+.playlist-item {
+    transition: all 0.3s ease;
+}
+
+.playlist-item:hover {
+    transform: translateX(5px);
+    border-color: rgba(103, 126, 234, 0.5);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.playlist-item.downloading {
+    border-left: 4px solid #4299e1;
+    animation: pulse-border 2s infinite;
+}
+
+.playlist-item.completed {
+    border-left: 4px solid #48bb78;
+}
+
+.playlist-item.error {
+    border-left: 4px solid #f56565;
+}
+
+@keyframes pulse-border {
+    0%, 100% {
+        border-left-color: #4299e1;
+    }
+    50% {
+        border-left-color: #667eea;
+    }
+}
+
+/* ========== LOADING SPINNER ========== */
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    border-top-color: #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ========== TOOLTIP ANIMATIONS ========== */
+[title] {
+    position: relative;
+}
+
+/* ========== SMOOTH SCROLLING ========== */
+html {
+    scroll-behavior: smooth;
+}
+
+/* ========== LIGHT MODE ADJUSTMENTS ========== */
+[data-theme="light"] .state-indicator {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: #1a1a2e;
+}
+
+[data-theme="light"] .ripple {
+    background: rgba(0, 0, 0, 0.2);
+}

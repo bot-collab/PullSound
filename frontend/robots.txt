@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /downloads/
+
+# Sitemap
+Sitemap: https://pullsound.onrender.com/sitemap.xml
+
+# Crawl-delay
+Crawl-delay: 1

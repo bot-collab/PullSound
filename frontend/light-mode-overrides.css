@@ -1,0 +1,86 @@
+/* Light mode specific adjustments */
+[data-theme="light"] .background {
+  background: linear-gradient(
+    180deg,
+    var(--bg-primary) 0%,
+    #F5F8FF 50%,
+    var(--bg-primary) 100%
+  );
+}
+
+[data-theme="light"] .orb-1 {
+  background: radial-gradient(circle, rgba(0, 122, 255, 0.2), rgba(0, 122, 255, 0.02));
+}
+
+[data-theme="light"] .orb-2 {
+  background: radial-gradient(circle, rgba(51, 149, 255, 0.15), rgba(51, 149, 255, 0.02));
+}
+
+[data-theme="light"] .orb-3 {
+  background: radial-gradient(circle, rgba(0, 81, 213, 0.18), rgba(0, 81, 213, 0.02));
+}
+
+/* Buttons and controls need higher contrast in light mode */
+[data-theme="light"] .option-btn {
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="light"] .option-btn:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .option-btn.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 15px rgba(0, 122, 255, 0.3);
+}
+
+[data-theme="light"] .btn-download {
+  background: var(--primary);
+  border: 1px solid var(--primary-dark);
+  color: #FFFFFF !important;
+}
+
+[data-theme="light"] .btn-download:hover {
+  background: var(--primary-dark);
+  box-shadow: 0 8px 25px rgba(0, 122, 255, 0.4);
+}
+
+[data-theme="light"] .glass-input-container {
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .glass-input-container:focus-within {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: var(--primary);
+}
+
+[data-theme="light"] .icon-container {
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .video-preview {
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .input-icon {
+  color: var(--text-tertiary);
+}
+
+[data-theme="light"] .btn-clear {
+  color: var(--text-tertiary);
+}
+
+[data-theme="light"] .btn-clear:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+/* Progress bar in light mode */
+[data-theme="light"] .progress-fill {
+  background: linear-gradient(90deg, var(--primary), var(--primary-light));
+}

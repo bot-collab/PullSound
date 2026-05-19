@@ -1,0 +1,22 @@
+Flask==3.0.0
+flask-cors==4.0.0
+yt-dlp>=2024.10.0
+flask-socketio
+eventlet
+
+# Phase 1: Security & Performance
+Flask-Limiter>=3.5.0
+Flask-Compress>=1.14.0
+Flask-Caching>=2.1.0
+python-dotenv>=1.0.0
+
+# Phase 2: Features
+mutagen>=1.47.0
+google-api-python-client>=2.100.0
+
+# Phase 3: Advanced (Optional)
+redis>=5.0.0
+prometheus-flask-exporter>=0.22.0
+flask-swagger-ui>=4.11.1
+pytest>=7.4.0
+pytest-flask>=1.2.0
