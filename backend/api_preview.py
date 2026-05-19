@@ -233,6 +233,19 @@ def _get_audio_preview_stream(
 ):
     """Obtiene bytes iniciales del stream de audio usando Range sin FFmpeg."""
     try:
+        if 'spotify.com' in url:
+            try:
+                import requests
+                resp_oembed = requests.get(f"https://open.spotify.com/oembed?url={url}", timeout=5)
+                if resp_oembed.status_code == 200:
+                    data = resp_oembed.json()
+                    title = data.get('title')
+                    if title:
+                        logger.info(f"Spotify preview intercept: translated to ytsearch1:{title}")
+                        url = f"ytsearch1:{title}"
+            except Exception as e:
+                logger.warning(f"Error interceptando Spotify URL para preview: {e}")
+
         stream_url, abr = _get_ytdlp_stream_url(
             url, logger=logger, platform=platform, subprocess_module=subprocess_module
         )

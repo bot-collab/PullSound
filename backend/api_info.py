@@ -139,6 +139,95 @@ def _normalize_single(info):
     }
 
 
+def _handle_spotify_track_info(url, deps):
+    import requests
+    import re
+    deps.logger.info(f"Usando Spotify oEmbed + HTML Parsing (Vista Rápida) para: {url[:100]}...")
+    try:
+        resp_html = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'}, timeout=5)
+        thumbnail = None
+        track_title = 'Spotify Track'
+        img_matches = re.findall(r'https://i\.scdn\.co/image/[a-zA-Z0-9]+', resp_html.text)
+        if img_matches:
+            thumbnail = img_matches[0]
+        else:
+            resp_oembed = requests.get(f"https://open.spotify.com/oembed?url={url}", timeout=5)
+            if resp_oembed.status_code == 200:
+                data = resp_oembed.json()
+                thumbnail = data.get('thumbnail_url')
+                track_title = data.get('title', track_title)
+        artist = 'Spotify'
+        title_match = re.search(r'<title>(.*?)</title>', resp_html.text)
+        if title_match:
+            title_text = title_match.group(1).replace(' | Spotify', '')
+            if ' - song and lyrics by ' in title_text:
+                track_title, artist = title_text.split(' - song and lyrics by ', 1)
+            elif ' - song by ' in title_text:
+                track_title, artist = title_text.split(' - song by ', 1)
+        return deps.jsonify({
+            'is_playlist': False,
+            'title': f"{artist} - {track_title}",
+            'duration': 0,
+            'thumbnail': thumbnail,
+            'uploader': artist,
+            'view_count': None,
+        })
+    except Exception as e:
+        deps.logger.warning(f"Error en vista rápida Spotify: {e}. Cayendo a spotdl...")
+        return None
+
+def _handle_spotify_playlist_info(url, offset, limit, deps):
+    import subprocess
+    import json
+    import tempfile
+    import os
+    deps.logger.info(f"Usando spotdl para extraer tracks: {url[:100]}...")
+    with tempfile.NamedTemporaryFile(suffix='.spotdl', delete=False) as tf:
+        temp_path = tf.name
+    try:
+        subprocess.run(['spotdl', 'save', url, '--save-file', temp_path], capture_output=True, text=True, check=True)
+        with open(temp_path, 'r', encoding='utf-8') as f:
+            spotdl_data = json.load(f)
+        if not spotdl_data:
+            raise ValueError("No se encontraron datos")
+        if len(spotdl_data) > 1 or 'playlist' in url or 'album' in url:
+            entries = [{'url': t.get('url'), 'title': f"{t.get('artist', '')} - {t.get('name', '')}".strip(" -"), 'thumbnail': t.get('cover_url'), 'duration': t.get('duration')} for t in spotdl_data]
+            paginated_entries = entries[offset:offset + limit]
+            total = len(entries)
+            has_more = offset + len(paginated_entries) < total
+            next_offset = offset + len(paginated_entries) if has_more else None
+            return deps.jsonify({
+                'is_playlist': True,
+                'title': spotdl_data[0].get('list_name') or spotdl_data[0].get('album_name') or 'Spotify Playlist',
+                'count': total,
+                'offset': offset,
+                'limit': limit,
+                'has_more': has_more,
+                'next_offset': next_offset,
+                'entries': paginated_entries,
+                'thumbnail': spotdl_data[0].get('cover_url'),
+            })
+        else:
+            track = spotdl_data[0]
+            return deps.jsonify({
+                'is_playlist': False,
+                'title': f"{track.get('artist', '')} - {track.get('name', '')}".strip(" -"),
+                'duration': track.get('duration'),
+                'thumbnail': track.get('cover_url'),
+                'uploader': track.get('artist'),
+                'view_count': None,
+            })
+    finally:
+        if os.path.exists(temp_path):
+            os.unlink(temp_path)
+
+def _handle_spotify_info(url, offset, limit, deps):
+    if '/track/' in url:
+        res = _handle_spotify_track_info(url, deps)
+        if res:
+            return res
+    return _handle_spotify_playlist_info(url, offset, limit, deps)
+
 def register_info_endpoints(
     app,
     deps: InfoDeps,
@@ -162,6 +251,10 @@ def register_info_endpoints(
                 return deps.jsonify({'error': 'URL de YouTube inválida'}), 400
 
             url = deps.sanitize_input(url, max_length=2048)
+
+            # Interceptar Spotify y usar oEmbed para tracks (Híbrido) o spotdl para playlists
+            if 'spotify.com' in url:
+                return _handle_spotify_info(url, offset, limit, deps)
 
             deps.logger.info(f"Obteniendo info de: {url[:100]}...")
 

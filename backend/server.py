@@ -53,10 +53,13 @@ MAX_PREVIEW_DURATION = 60  # seconds
 MAX_FILENAME_LENGTH = 200
 PREVIEW_CHUNK_SIZE = 262144  # 256KB for better streaming performance
 DEFAULT_CHUNK_SIZE = 8192
+MSG_FINALIZING = 'Finalizando...'
 
 app = Flask(__name__)
 # SECURITY: Use environment variable for SECRET_KEY in production
-app.config['SECRET_KEY'] = os.environ.get('FLASK_SECRET_KEY', os.urandom(24))
+# Stable fallback prevents session invalidation on restart and multi-worker mismatch
+_default_secret = 'pullsound-dev-key-change-in-production'  # NOSONAR
+app.config['SECRET_KEY'] = os.environ.get('FLASK_SECRET_KEY', _default_secret)
 
 # Initialize Flask extensions
 Compress(app)  # Gzip compression for responses
@@ -69,7 +72,10 @@ limiter = Limiter(
 )
 
 # SECURITY FIX #6: Restrict CORS to localhost only
-_socketio_origins = list(config.ALLOWED_ORIGINS) + ["file://"]
+if config.ALLOWED_ORIGINS == "*":
+    _socketio_origins = "*"
+else:
+    _socketio_origins = list(config.ALLOWED_ORIGINS) + ["file://"]
 socketio = SocketIO(
     app,
     cors_allowed_origins=_socketio_origins,
@@ -201,7 +207,7 @@ def cleanup_partial_files(title_pattern):
         partial_extensions = ['.part', '.ytdl', '.temp', '.webp', '.mp4.part']
         count = 0
         for f in DOWNLOAD_FOLDER.glob('*'):
-            if any(title_pattern.lower() in f.name.lower() for _ in [1]):
+            if title_pattern.lower() in f.name.lower():
                 if any(f.name.endswith(ext) for ext in partial_extensions) or f.suffix == '.webp':
                     try:
                         safe_operation(f.unlink)
@@ -211,7 +217,7 @@ def cleanup_partial_files(title_pattern):
                         logger.warning(f"No se pudo eliminar {f.name}: {e}")
         return count
     except Exception as e:
-        logger.error(f"Error limpiando archivos parciales: {e}")
+        logger.exception("Error limpiando archivos parciales")
         return 0
 
 # ========== THREAD DE LIMPIEZA ==========
@@ -271,7 +277,9 @@ ALLOWED_DOMAINS = [
     'www.youtube.com',
     'soundcloud.com',
     'www.soundcloud.com',
-    'm.soundcloud.com'
+    'm.soundcloud.com',
+    'open.spotify.com',
+    'spotify.com',
 ]
 
 def validate_url(url):
@@ -292,8 +300,8 @@ def validate_url(url):
         parsed = urlparse(url)
         domain = parsed.netloc.lower()
         
-        # Verificar que el dominio esté en la whitelist
-        return any(allowed in domain for allowed in ALLOWED_DOMAINS)
+        # Verificar que el dominio esté en la whitelist (exact or subdomain match)
+        return any(domain == allowed or domain.endswith(f'.{allowed}') for allowed in ALLOWED_DOMAINS)
     except Exception:
         return False
 
@@ -314,8 +322,8 @@ def _delete_old_file(file_path) -> bool:
         safe_operation(file_path.unlink)
         logger.info(f"Archivo antiguo eliminado: {file_path.name}")
         return True
-    except Exception as e:
-        logger.error(f"Error eliminando {file_path.name}: {e}")
+    except Exception:
+        logger.exception("Error eliminando %s", file_path.name)
         return False
 
 
@@ -337,8 +345,8 @@ def cleanup_files():
             if count > 0:
                 logger.info(f"Limpieza completada: {count} archivos eliminados")
                 
-        except Exception as e:
-            logger.error(f"Error en thread de limpieza: {e}")
+        except Exception:
+            logger.exception("Error en thread de limpieza")
 
 def start_background_services():
     """Start worker pool and cleanup thread (idempotent).
@@ -431,8 +439,8 @@ def update_task_progress(task_id, status, progress, message):
         socketio.emit('status_update', data, room=task_id)
         
         logger.info(f"[{task_id}] {progress}% - {message}")
-    except Exception as e:
-        logger.error(f"Error actualizando progreso: {e}")
+    except Exception:
+        logger.exception("Error actualizando progreso")
 
 class DownloadTask:
     """Clase para manejar tareas de descarga"""
@@ -520,7 +528,7 @@ def _handle_postprocessor_finished(task_id: str, pp: str) -> None:
     handlers = {
         'FFmpegExtractAudio': (94, 'Audio listo'),
         'EmbedThumbnail': (96, 'Portada lista'),
-        'FFmpegMetadata': (99, 'Finalizando...'),
+        'FFmpegMetadata': (99, MSG_FINALIZING),
     }
     progress, message = handlers.get(pp, (None, None))
     if progress is not None:
@@ -713,13 +721,70 @@ def _complete_download(task_id: str, clean_title: str, task, video_title: str, d
     socketio.emit('status_update', task_copy, room=task_id)
     logger.info(f"[{task_id}] ✓ Completado: {final_filename} ({file_size_mb:.1f}MB)")
 
-    # Auto-cleanup: delete file after successful completion (post-notification)
-    try:
-        deleted = _delete_old_file(filepath)
-        if deleted:
-            logger.info(f"[{task_id}] ✓ Archivo eliminado tras completar: {final_filename}")
-    except Exception as cleanup_error:
-        logger.warning(f"[{task_id}] No se pudo limpiar {final_filename} tras completar: {cleanup_error}")
+    # NOTE: File is NOT auto-deleted here. The frontend triggers cleanup via
+    # /api/cleanup/<filename> after the download completes, and the background
+    # cleanup thread removes files older than FILE_MAX_AGE as a safety net.
+
+def _process_spotify_download(task):
+    """Procesa una descarga de Spotify usando spotdl"""
+    import subprocess
+    import shutil
+    import tempfile
+    
+    task_id = task.task_id
+    url = task.url
+    format_ext = task.audio_format.lower()
+    if format_ext not in ['mp3', 'flac', 'wav']:
+        format_ext = 'mp3'
+        
+    update_task_progress(task_id, 'starting', 0, 'Iniciando descarga de Spotify...')
+    update_task_progress(task_id, 'converting', 40, 'Buscando y descargando con spotdl...')
+    
+    with tempfile.TemporaryDirectory() as temp_dir:
+        output_template = f"{temp_dir}/{{artist}} - {{title}}.{format_ext}"
+        
+        try:
+            cmd = [
+                'spotdl', url,
+                '--format', format_ext,
+                '--output', output_template,
+                '--log-level', 'ERROR'
+            ]
+            
+            # Formatos lossy aceptan bitrate numérico
+            if format_ext == 'mp3':
+                # spotdl espera "320k" o "auto", etc. pero el usuario pasa 320, 256.
+                # Si task.quality es un número
+                try:
+                    bitrate = int(task.quality)
+                    cmd.extend(['--bitrate', f"{bitrate}k"])
+                except (ValueError, TypeError):
+                    pass
+            elif format_ext in ['flac', 'wav']:
+                cmd.extend(['--bitrate', 'disable'])
+                
+            subprocess.run(cmd, capture_output=True, text=True, check=True, timeout=300)
+            
+            update_task_progress(task_id, 'finalizing', 90, MSG_FINALIZING)
+            
+            files = list(Path(temp_dir).glob(f"*.{format_ext}"))
+            if not files:
+                raise RuntimeError("spotdl no produjo ningún archivo")
+                
+            downloaded_file = files[0]
+            clean_title = downloaded_file.stem
+            
+            final_path = DOWNLOAD_FOLDER / downloaded_file.name
+            shutil.move(str(downloaded_file), str(final_path))
+            
+            _complete_download(task_id, clean_title, task, clean_title, duration=0)
+            
+        except subprocess.CalledProcessError as e:
+            logger.exception(f"spotdl failed: {e.stderr}")
+            update_task_progress(task_id, 'error', 0, 'Error descargando de Spotify')
+        except Exception as e:
+            logger.exception("Error inesperado con spotdl")
+            update_task_progress(task_id, 'error', 0, f'Error: {str(e)[:100]}')
 
 
 def process_download(task):
@@ -727,6 +792,10 @@ def process_download(task):
     task_id = task.task_id
     
     try:
+        if 'spotify.com' in task.url:
+            _process_spotify_download(task)
+            return
+
         # 1. INICIO
         update_task_progress(task_id, 'starting', 0, 'Iniciando proceso...')
         
@@ -750,17 +819,17 @@ def process_download(task):
         
         # 7-10. POST-PROCESAMIENTO Y FINALIZACIÓN
         update_task_progress(task_id, 'converting', 85, 'Optimizando audio...')
-        update_task_progress(task_id, 'finalizing', 90, 'Finalizando...')
+        update_task_progress(task_id, 'finalizing', 90, MSG_FINALIZING)
         _complete_download(task_id, clean_title, task, video_title, duration)
         
     except yt_dlp.utils.DownloadError as e:
         if 'cancelled by user' in str(e).lower():
             logger.info(f"[{task_id}] Descarga cancelada por el usuario")
         else:
-            logger.error(f"[{task_id}] ✗ Error de descarga: {str(e)}")
+            logger.exception("[%s] ✗ Error de descarga", task_id)
             update_task_progress(task_id, 'error', 0, f'Error: {str(e)[:100]}')
     except Exception as e:
-        logger.error(f"[{task_id}] ✗ Error inesperado: {str(e)}")
+        logger.exception("[%s] ✗ Error inesperado", task_id)
         update_task_progress(task_id, 'error', 0, f'Error: {str(e)[:100]}')
 
 
@@ -775,8 +844,8 @@ def download_worker():
             
             try:
                 process_download(task)
-            except Exception as e:
-                logger.error(f"Error en worker: {e}")
+            except Exception:
+                logger.exception("Error en worker")
             finally:
                 download_queue.task_done()
                 
@@ -802,7 +871,7 @@ def graceful_shutdown():
     
     logger.info("✓ Workers cerrados correctamente")
 
-import atexit
+# atexit already imported at module level (line 21)
 if not _running_under_pytest():
     atexit.register(graceful_shutdown)
     atexit.register(cleanup_all_preview_processes)
@@ -885,31 +954,6 @@ register_file_endpoints(
 
 
 # Enhanced download endpoint with timestamp and metadata support
-def apply_metadata_to_file(filepath, metadata):
-    """Apply custom metadata to audio file using mutagen"""
-    try:
-        from mutagen.mp3 import MP3
-        from mutagen.id3 import ID3, TIT2, TPE1, TALB, TDRC, TCON
-        
-        audio = MP3(filepath, ID3=ID3)
-        
-        if metadata.get('title'):
-            audio['TIT2'] = TIT2(encoding=3, text=metadata['title'])
-        if metadata.get('artist'):
-            audio['TPE1'] = TPE1(encoding=3, text=metadata['artist'])
-        if metadata.get('album'):
-            audio['TALB'] = TALB(encoding=3, text=metadata['album'])
-        if metadata.get('year'):
-            audio['TDRC'] = TDRC(encoding=3, text=metadata['year'])
-        if metadata.get('genre'):
-            audio['TCON'] = TCON(encoding=3, text=metadata['genre'])
-        
-        audio.save()
-        logger.info(f"Metadata applied to {filepath.name}")
-        
-    except Exception as e:
-        logger.error(f"Error applying metadata: {e}")
-
 
 def check_ffmpeg():
     """Verifica FFmpeg"""

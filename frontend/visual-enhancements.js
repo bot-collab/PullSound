@@ -63,10 +63,13 @@ class StateIndicator {
             loading: 'fa-spinner fa-spin'
         };
         
-        indicator.innerHTML = `
-            <i class="fas ${icons[type]}"></i>
-            <span>${message}</span>
-        `;
+        const iconEl = document.createElement('i');
+        iconEl.className = `fas ${icons[type]}`;
+        const spanEl = document.createElement('span');
+        spanEl.textContent = message;
+        indicator.appendChild(iconEl);
+        indicator.appendChild(document.createTextNode(' '));
+        indicator.appendChild(spanEl);
         
         document.body.appendChild(indicator);
         
@@ -83,6 +86,18 @@ class StateIndicator {
         }
         
         return indicator;
+    }
+
+    static hide(indicator) {
+        if (!indicator) {
+            document.querySelectorAll('.state-indicator').forEach(el => {
+                el.classList.remove('show');
+                setTimeout(() => el.remove(), 300);
+            });
+            return;
+        }
+        indicator.classList.remove('show');
+        setTimeout(() => indicator.remove(), 300);
     }
 }
 

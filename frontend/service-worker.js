@@ -1,6 +1,6 @@
 // PullSound Service Worker for PWA offline support
 
-const CACHE_NAME = 'pullsound-v2.0.0';
+const CACHE_NAME = 'pullsound-v2.1.0';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -9,8 +9,9 @@ const urlsToCache = [
   '/light-mode-overrides.css',
   '/visual-enhancements.css',
   '/script.js',
-  '/ux-modules.js',
   '/visual-enhancements.js',
+  '/feature-modules.js',
+  '/mass-download.js',
   '/feature-modules.js',
   '/favicon.svg',
   '/manifest.json',
@@ -51,6 +52,11 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
+
+  // Skip cross-origin requests to avoid SW promise rejection errors (like GTM)
+  if (url.origin !== self.location.origin) {
+    return;
+  }
 
   // Skip caching for Socket.IO and WebSocket connections
   if (url.pathname.includes('/socket.io/') || 

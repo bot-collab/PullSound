@@ -85,19 +85,19 @@ def check_ffmpeg():
         else:
             raise RuntimeError("FFmpeg no responde correctamente")
             
-    except (subprocess.TimeoutExpired, FileNotFoundError, RuntimeError):
-        print(f"{Colors.FAIL}x FFmpeg no esta instalado o no esta en el PATH{Colors.ENDC}")
-        print(f"\n{Colors.WARNING}Por favor instala FFmpeg:{Colors.ENDC}")
+    except (subprocess.TimeoutExpired, FileNotFoundError, RuntimeError) as e:
+        print(f"{Colors.FAIL}x Error al detectar FFmpeg: {str(e)}{Colors.ENDC}")
+        print(f"\n{Colors.WARNING}FFmpeg es CRÍTICO para convertir audio.{Colors.ENDC}")
         
         system = platform.system()
         if system == "Windows":
-            print("  • Opción 1 (Chocolatey): choco install ffmpeg")
-            print("  • Opción 2 (Manual): https://www.gyan.dev/ffmpeg/builds/")
+            print("  • Opción 1: Instala con Chocolatey: choco install ffmpeg")
+            print("  • Opción 2: Descarga de https://www.gyan.dev/ffmpeg/builds/ y añade al PATH")
         elif system == "Darwin":  # macOS
-            print("  • Homebrew: brew install ffmpeg")
+            print("  • Instala con Homebrew: brew install ffmpeg")
         else:  # Linux
-            print("  • Ubuntu/Debian: sudo apt install ffmpeg")
-            print("  • Fedora: sudo dnf install ffmpeg")
+            print("  • Ubuntu/Debian: sudo apt update && sudo apt install -y ffmpeg")
+            print("  • Docker: Asegúrate de que el Dockerfile incluya 'apt-get install -y ffmpeg'")
         
         return False
 
@@ -154,11 +154,25 @@ def setup_directories():
     frontend_dir = base_dir / 'frontend'
     
     # Crear directorios
-    backend_dir.mkdir(exist_ok=True)
-    downloads_dir.mkdir(exist_ok=True)
-    frontend_dir.mkdir(exist_ok=True)
+    try:
+        backend_dir.mkdir(exist_ok=True, parents=True)
+        downloads_dir.mkdir(exist_ok=True, parents=True)
+        frontend_dir.mkdir(exist_ok=True, parents=True)
+        
+        # Verificar permisos de escritura en downloads
+        test_file = downloads_dir / '.write_test'
+        try:
+            test_file.touch()
+            test_file.unlink()
+            print(f"{Colors.OKGREEN}> Estructura de directorios verificada (Escritura OK){Colors.ENDC}")
+        except (PermissionError, IOError):
+            print(f"{Colors.FAIL}x Error: No hay permisos de escritura en {downloads_dir}{Colors.ENDC}")
+            print(f"{Colors.WARNING}  Esto impedirá guardar los archivos descargados.{Colors.ENDC}")
+            
+    except Exception as e:
+        print(f"{Colors.FAIL}x Error al crear directorios: {str(e)}{Colors.ENDC}")
+        return None, None, None
     
-    print(f"{Colors.OKGREEN}> Estructura de directorios verificada{Colors.ENDC}")
     print(f"  • Backend: {backend_dir}")
     print(f"  • Downloads: {downloads_dir}")
     print(f"  • Frontend: {frontend_dir}")

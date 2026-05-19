@@ -23,6 +23,9 @@ MANIFEST
 
 # Virtual Environment
 .env
+.env.*
+!.env.example
+cookies.txt
 .venv
 .spydonw/
 env/
@@ -53,7 +56,8 @@ backend/downloads/
 *.opus
 *.webm
 *.mp4
-
+*.zip
+*.spotdl
 # Logs
 *.log
 logs/

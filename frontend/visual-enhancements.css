@@ -233,3 +233,69 @@ html {
 [data-theme="light"] .ripple {
     background: rgba(0, 0, 0, 0.2);
 }
+
+/* ========== MASS DOWNLOAD MODAL ========== */
+.mass-download-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(10, 10, 20, 0.8);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.mass-download-modal.show {
+    opacity: 1;
+}
+
+.mass-download-content {
+    width: 90%;
+    max-width: 500px;
+    padding: 30px;
+    text-align: center;
+    transform: scale(0.9);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.mass-download-modal.show .mass-download-content {
+    transform: scale(1);
+}
+
+.mass-download-content h2 {
+    font-size: 1.5rem;
+    margin: 0;
+    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.current-track-container {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.current-track {
+    font-size: 0.95rem;
+    color: #e2e8f0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+}
+
+.modal-footer {
+    margin-top: 10px;
+}

@@ -47,6 +47,8 @@ def _validate_format(audio_format, deps):
 
 
 def _validate_quality(quality, deps):
+    # Lossless formats use text-based quality descriptors (e.g. '16bit_44kHz')
+    # Only validate numeric quality for lossy formats
     try:
         quality_int = int(quality)
         valid_qualities = [128, 192, 256, 320]
@@ -58,7 +60,9 @@ def _validate_quality(quality, deps):
                 )
             }), 400
     except (ValueError, TypeError):
-        return deps.jsonify({'error': 'Calidad debe ser un número'}), 400
+        # Non-numeric quality is allowed for lossless formats (flac, wav)
+        # The download process will handle format-specific quality settings
+        pass
     return None
 
 

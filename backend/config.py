@@ -20,13 +20,15 @@ DOWNLOADS_DIR = BACKEND_DIR / 'downloads'
 SERVER_HOST = os.getenv('SERVER_HOST', '0.0.0.0')
 
 _raw_port = os.getenv('SERVER_PORT') or os.getenv('PORT')
-_clean_port = (_raw_port or '').strip()
-if _clean_port.startswith('$'):
-    _clean_port = ''  # Evita placeholders tipo "$PORT" que no son enteros
-try:
-    SERVER_PORT = int(_clean_port) if _clean_port else 5000
-except (ValueError, TypeError):
+_clean_port = str(_raw_port or '').strip()
+if _clean_port.startswith('$') or not _clean_port:
     SERVER_PORT = 5000
+else:
+    try:
+        SERVER_PORT = int(_clean_port)
+    except (ValueError, TypeError):
+        SERVER_PORT = 5000
+
 DEBUG_MODE = os.getenv('DEBUG_MODE', 'False').lower() == 'true'
 
 # Rate Limiting
@@ -116,6 +118,8 @@ MAX_CONCURRENT_DOWNLOADS = int(os.getenv('MAX_CONCURRENT_DOWNLOADS', 5))
 
 
 def _parse_origins(raw: str):
+    if raw == "*":
+        return "*"
     return [origin.strip() for origin in raw.split(',') if origin and origin.strip()]
 
 
@@ -123,9 +127,10 @@ def _parse_origins(raw: str):
 ALLOWED_ORIGINS = _parse_origins(
     os.getenv(
         'ALLOWED_ORIGINS',
-        'http://localhost:5000,http://127.0.0.1:5000'
+        '*' if DEBUG_MODE else 'http://localhost:5000,http://127.0.0.1:5000'
     )
 )
+
 
 # YouTube API (for search feature)
 YOUTUBE_API_KEY = os.getenv('YOUTUBE_API_KEY', None)

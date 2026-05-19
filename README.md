@@ -1,233 +1,115 @@
-# PullSound 🎵
+# 🎵 PullSound
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue)
-![Python](https://img.shields.io/badge/python-3.8+-green)
-![License](https://img.shields.io/badge/license-MIT-yellow)
+![PullSound Banner](frontend/og-image.png)
 
-Download audio from YouTube, SoundCloud, and more. Convert to MP3, FLAC, WAV, M4A, OPUS with high quality.
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![Flask](https://img.shields.io/badge/Flask-Web%20Framework-lightgrey?style=for-the-badge&logo=flask)](https://flask.palletsprojects.com/)
+[![Socket.IO](https://img.shields.io/badge/Socket.IO-Real--Time-black?style=for-the-badge&logo=socket.io)](https://socket.io/)
+[![yt-dlp](https://img.shields.io/badge/yt--dlp-Downloader-red?style=for-the-badge)](https://github.com/yt-dlp/yt-dlp)
 
-## ✨ Características
-
-- 🎯 **Múltiples formatos**: MP3, FLAC, WAV, M4A, OPUS
-- 📊 **Progreso en tiempo real** con WebSockets
-- 📝 **Soporte para playlists** con descarga individual o masiva
-- 🎨 **Interfaz moderna** con animaciones fluidas
-- ⚡ **Descargas concurrentes** (hasta 5 simultáneas)
-- 🛑 **Cancelación instantánea** de descargas
-- 🧹 **Limpieza automática** de archivos antiguos
-
-## 📋 Requisitos Previos
-
-### Sistema Operativo
-
-- Windows 10/11
-- Linux (Ubuntu 20.04+, Fedora 35+)
-- macOS (11+)
-
-### Software Requerido
-
-1. **Python 3.14 o superior**
-
-   ```bash
-   python --version  # Verificar instalación
-   ```
-
-2. **FFmpeg** (esencial para conversión de audio)
-
-   **Windows:**
-
-   ```bash
-   # Con Chocolatey
-   choco install ffmpeg
-
-   # O descargar desde: https://www.gyan.dev/ffmpeg/builds/
-   ```
-
-   **macOS:**
-
-   ```bash
-   brew install ffmpeg
-   ```
-
-   **Linux:**
-
-   ```bash
-   # Ubuntu/Debian
-   sudo apt install ffmpeg
-
-   # Fedora
-   sudo dnf install ffmpeg
-   ```
-
-## 🚀 Instalación
-
-### 1. Clonar el repositorio
-
-```bash
-git clone https://github.com/tuusuario/spydonw.git
-cd spydonw
-```
-
-### 2. Crear entorno virtual (recomendado)
-
-```bash
-python -m venv .spydonw
-source .spydonw/bin/activate  # Linux/macOS
-.spydonw\Scripts\activate     # Windows
-```
-
-### 3. Instalar dependencias
-
-```bash
-pip install -r requirements.txt
-```
-
-**O instalación automática:**
-
-```bash
-python main.py --install
-```
-
-## 💻 Uso
-
-### Inicio Rápido
-
-```bash
-python main.py
-```
-
-El servidor se iniciará en `http://localhost:5000`. Abre tu navegador y accede a esa URL.
-
-### Opciones de Línea de Comandos
-
-```bash
-python main.py [opciones]
-```
-
-| Opción            | Descripción                       |
-| ----------------- | --------------------------------- |
-| `--help`, `-h`    | Muestra ayuda                     |
-| `--check`, `-c`   | Verifica dependencias sin iniciar |
-| `--install`, `-i` | Instala dependencias faltantes    |
-| `--version`, `-v` | Muestra versión                   |
-
-### Ejemplos de Uso
-
-**Descargar un video:**
-
-1. Pega la URL de YouTube
-2. Selecciona formato (MP3, FLAC, etc.)
-3. Selecciona calidad (128kbps, 320kbps, etc.)
-4. Haz clic en "Descargar"
-
-**Descargar playlist completa:**
-
-1. Pega URL de playlist de YouTube
-2. Aparecerán todas las canciones
-3. Descarga individualmente o usa "Descargar Todo"
-
-## 📁 Estructura del Proyecto
-
-```
-spydonw/
-├── backend/
-│   ├── config.py          # Configuración centralizada
-│   ├── server.py          # Servidor Flask + SocketIO
-│   └── downloads/         # Archivos descargados (temporal)
-├── frontend/
-│   ├── index.html         # Interfaz web
-│   ├── script.js          # Lógica del cliente
-│   └── styles.css         # Estilos
-├── main.py                # Punto de entrada
-├── requirements.txt       # Dependencias Python
-└── README.md             # Este archivo
-```
-
-## ⚙️ Configuración
-
-Edita `backend/config.py` para personalizar:
-
-```python
-# Tiempo de limpieza automática
-CLEANUP_DELAY = 300  # 5 minutos
-
-# Edad máxima de archivos
-FILE_MAX_AGE = 1800  # 30 minutos
-
-# Descargas concurrentes
-MAX_CONCURRENT_DOWNLOADS = 5
-
-# Puerto del servidor
-SERVER_PORT = 5000
-```
-
-## 🔧 Tecnologías
-
-### Backend
-
-- **Flask**: Framework web
-- **Flask-SocketIO**: Comunicación en tiempo real
-- **yt-dlp**: Motor de descarga de YouTube
-- **FFmpeg**: Conversión de audio
-
-### Frontend
-
-- **Vanilla JavaScript**: Sin frameworks
-- **WebSockets**: Actualizaciones en vivo
-- **CSS Animations**: Barras de progreso animadas
-
-## 🐛 Solución de Problemas
-
-### Error: "FFmpeg no está instalado"
-
-- **Solución**: Instala FFmpeg siguiendo las instrucciones de [Requisitos Previos](#software-requerido)
-
-### Error: "ModuleNotFoundError"
-
-- **Solución**:
-  ```bash
-  pip install -r requirements.txt
-  ```
-
-### El progreso no avanza
-
-- **Solución**: Verifica la consola del navegador (F12) y los logs del servidor
-- Asegúrate de que WebSockets esté habilitado en tu firewall
-
-### Descarga muy lenta
-
-- **Problema**: YouTube limita velocidad por IP
-- **Solución**: Espera unos minutos entre descargas masivas
-
-## 🚨 Problemas Conocidos
-
-Ver [analisis_errores.md](file:///C:/Users/USUARIO/.gemini/antigravity/brain/405ac77f-adad-49bc-b59e-24e69796912d/analisis_errores.md) para lista completa de issues y roadmap de fixes.
-
-## 📜 Licencia
-
-MIT License - ver archivo LICENSE para detalles
-
-## 👤 Autor
-
-**3sc0b0t**
-
-- Versión: 1.0.0
-- Fecha: 2025-10-15
-
-## 🤝 Contribuir
-
-Las contribuciones son bienvenidas. Por favor:
-
-1. Fork el proyecto
-2. Crea una rama (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
-
-## ⚠️ Disclaimer
-
-Este software es solo para uso educativo y personal. Respeta los términos de servicio de YouTube y las leyes de derechos de autor de tu país.
+**PullSound** es una aplicación web moderna, rápida y elegante diseñada para extraer y convertir audio desde YouTube y Spotify en máxima calidad. Construida con una arquitectura orientada a eventos (WebSocket) y una interfaz de usuario premium basada en *Glassmorphism*.
 
 ---
 
-**¿Problemas?** Abre un issue en GitHub o contacta al autor.
+## ✨ Características Principales
+
+- 🎨 **Interfaz de Usuario Premium:** Diseño moderno con *Glassmorphism*, animaciones fluidas, modo claro/oscuro y diseño responsivo.
+- ⚡ **Progreso en Tiempo Real:** Olvídate de recargar la página. Gracias a Socket.IO, ves el progreso de descarga de cada archivo byte a byte en tiempo real.
+- 🚀 **Descarga Masiva Inteligente:** Capacidad de descargar playlists completas (hasta 100 canciones por lote) con un gestor de concurrencia avanzado (3 descargas simultáneas) para no saturar la red ni la memoria. Al finalizar, te entrega todo en un cómodo archivo `.zip`.
+- 🎧 **Soporte Spotify Nativo:** Integración con `spotdl` para descargar canciones o playlists de Spotify de forma directa, obteniendo la mejor metadata y carátulas (covers) directamente desde la API.
+- 🎶 **Previsualización de Audio:** Generación de fragmentos de 15 segundos para previsualizar el audio antes de descargarlo.
+- 📱 **Soporte PWA (Progressive Web App):** Instala PullSound en tu PC, Android o iOS y úsala como una aplicación nativa, con soporte offline y tiempos de carga ultrarrápidos gracias a Service Workers.
+
+---
+
+## 🛠️ Tecnologías Utilizadas
+
+### Backend (Servidor)
+- **Python 3.10+**
+- **Flask** & **Flask-SocketIO** (API REST & WebSockets)
+- **yt-dlp** & **spotdl** (Motores de extracción de media)
+- **FFmpeg** (Procesamiento y conversión de audio)
+- **Gunicorn** (Servidor WSGI para producción)
+
+### Frontend (Cliente)
+- **HTML5 & Vanilla JavaScript** (Sin frameworks pesados, máxima velocidad)
+- **CSS3 Moderno** (Variables nativas, animaciones y Glassmorphism)
+- **Socket.IO Client**
+
+---
+
+## 🚀 Instalación y Despliegue Local
+
+### Prerrequisitos
+- Python 3.10 o superior.
+- **FFmpeg** instalado y configurado en el PATH de tu sistema operativo.
+
+### Pasos a seguir
+
+1. **Clona el repositorio:**
+   ```bash
+   git clone https://github.com/tu-usuario/PullSound.git
+   cd PullSound
+   ```
+
+2. **Crea y activa un entorno virtual:**
+   ```bash
+   python -m venv venv
+   # En Windows:
+   venv\Scripts\activate
+   # En Linux/Mac:
+   source venv/bin/activate
+   ```
+
+3. **Instala las dependencias:**
+   ```bash
+   pip install -r backend/requirements.txt
+   ```
+
+4. **Configura las variables de entorno:**
+   Copia el archivo `.env.example` y renómbralo a `.env`.
+   ```bash
+   cp .env.example .env
+   ```
+   *Opcional: Ajusta los límites de rate-limit y la concurrencia según la capacidad de tu hardware en el archivo `.env`.*
+
+5. **Inicia el servidor:**
+   ```bash
+   python main.py
+   ```
+
+6. **¡Listo!** Abre tu navegador y visita: `http://localhost:5000`
+
+---
+
+## ☁️ Despliegue en Producción (Render, Heroku, VPS)
+
+El proyecto está configurado para ser desplegado fácilmente en plataformas PaaS. Incluye archivos `gunicorn_config.py` y soporte para variables de entorno para producción.
+
+**Importante para producción:**
+- Es **crítico** instalar `ffmpeg` en el servidor host. Si usas plataformas como Render, deberás asegurar que el entorno cuente con el paquete `ffmpeg` (por ejemplo, mediante Docker o scripts de inicialización `apt.txt`).
+- Para descargas estables a largo plazo desde YouTube, se recomienda extraer tu archivo `cookies.txt` (usando extensiones como *Get cookies.txt LOCALLY*) y colocarlo en el entorno (añadido al `.gitignore` para tu seguridad).
+
+---
+
+## ⚠️ Aviso Legal (Disclaimer)
+
+> Esta aplicación ha sido desarrollada **únicamente con fines educativos y de investigación**. 
+> 
+> El desarrollador no asume ninguna responsabilidad por el uso indebido de esta herramienta. Descargar material protegido por derechos de autor sin el permiso explícito de los propietarios es ilegal en muchos países. Por favor, respeta los Términos de Servicio de YouTube, Spotify y los derechos de los creadores de contenido.
+
+---
+
+## 🤝 Contribuciones
+
+¡Las contribuciones son bienvenidas! Si deseas mejorar PullSound, siéntete libre de hacer un *Fork* del repositorio, crear una rama con tus mejoras (`git checkout -b feature/MejoraIncreible`) y enviar un *Pull Request*.
+
+1. Haz un Fork del proyecto.
+2. Crea tu Feature Branch (`git checkout -b feature/AmazingFeature`).
+3. Haz Commit de tus cambios (`git commit -m 'Add some AmazingFeature'`).
+4. Haz Push a la rama (`git push origin feature/AmazingFeature`).
+5. Abre un Pull Request.
+
+---
+
+### 🦕 *"Porque hasta un Yoshi necesita una buena banda sonora"*
