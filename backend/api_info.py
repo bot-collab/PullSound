@@ -81,10 +81,26 @@ def _build_ydl_opts(offset: int, limit: int):
     }
 
 
-def _add_cookiefile(ydl_opts: dict) -> dict:
-    """Inject cookiefile into yt-dlp opts if env var is present and readable."""
+def get_writable_cookiefile() -> str | None:
+    """Creates a writable copy of the cookiefile in /tmp if needed (e.g. for Render)."""
+    import shutil
     cookiefile = os.getenv('YTDLP_COOKIES_FILE')
     if cookiefile and os.path.exists(cookiefile):
+        writable_path = '/tmp/ytdlp_cookies.txt'
+        try:
+            if not os.path.exists(writable_path) or os.path.getmtime(cookiefile) > os.path.getmtime(writable_path):
+                shutil.copy2(cookiefile, writable_path)
+                os.chmod(writable_path, 0o666)
+            return writable_path
+        except Exception:
+            return cookiefile
+    return None
+
+
+def _add_cookiefile(ydl_opts: dict) -> dict:
+    """Inject cookiefile into yt-dlp opts if env var is present and readable."""
+    cookiefile = get_writable_cookiefile()
+    if cookiefile:
         ydl_opts['cookiefile'] = cookiefile
     return ydl_opts
 

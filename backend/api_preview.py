@@ -23,6 +23,10 @@ def _fallback_ytdlp_python(url, *, logger):
             'format': 'ba/b',
             'extract_flat': False,
         }
+        from backend.api_info import get_writable_cookiefile
+        cookiefile = get_writable_cookiefile()
+        if cookiefile:
+            opts['cookiefile'] = cookiefile
         with yt_dlp.YoutubeDL(opts) as ydl:
             info = ydl.extract_info(url, download=False)
             direct_url = info.get('url')
@@ -43,6 +47,10 @@ def _fallback_ytdlp_python(url, *, logger):
 def _get_ytdlp_stream_url(url, *, logger, platform, subprocess_module, timeout=30):
     """Extrae URL directa de audio; si el CLI falla, usa API Python."""
     cmd_url = ['yt-dlp', '-g', '-f', 'ba/b', url]
+    from backend.api_info import get_writable_cookiefile
+    cookiefile = get_writable_cookiefile()
+    if cookiefile:
+        cmd_url.extend(['--cookies', cookiefile])
 
     startupinfo = None
     if platform.system() == 'Windows':

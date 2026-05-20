@@ -26,7 +26,7 @@ from urllib.parse import urlparse
 from backend.routes_static import register_static_routes
 from backend.websocket_handlers import register_websocket_handlers
 from backend.api_files import register_file_endpoints
-from backend.api_info import register_info_endpoints
+from backend.api_info import register_info_endpoints, get_writable_cookiefile
 from backend.api_preview import register_preview_endpoints
 from backend.api_downloads import register_download_endpoints
 from backend.api_health_search import register_health_search_endpoints
@@ -600,8 +600,8 @@ def _get_video_info(task_id: str, url: str) -> tuple:
     }
 
     # Optional: inject cookiefile from env to bypass YouTube bot checks when deployed
-    cookiefile = os.getenv('YTDLP_COOKIES_FILE')
-    if cookiefile and os.path.exists(cookiefile):
+    cookiefile = get_writable_cookiefile()
+    if cookiefile:
         info_opts['cookiefile'] = cookiefile
     
     with yt_dlp.YoutubeDL(info_opts) as ydl:
@@ -635,8 +635,8 @@ def _configure_ydl_options(task_id: str, clean_title: str, task, adjusted_qualit
     }
 
     # Optional: reuse cookiefile for actual download if provided
-    cookiefile = os.getenv('YTDLP_COOKIES_FILE')
-    if cookiefile and os.path.exists(cookiefile):
+    cookiefile = get_writable_cookiefile()
+    if cookiefile:
         ydl_opts['cookiefile'] = cookiefile
     
     return _set_format_postprocessors(ydl_opts, task.audio_format, adjusted_quality)
