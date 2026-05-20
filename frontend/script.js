@@ -296,8 +296,6 @@ function updatePlaylistProgress(element, status) {
         progressBar.style.display = 'none';
         _handleErrorOrCancelledState(statusText, actionsDiv, status, element.dataset.index);
     }
-
-    checkMassZipReady();
 }
 
 function setPlaylistStatus(index, status) {
@@ -957,8 +955,10 @@ async function cleanupFile(filename) {
             await response.json();
         } else {
             // Don't show errors to user - file cleanup is non-critical
-            const error = await response.json();
-            console.warn('⚠ Cleanup failed (non-critical):', error.error || 'Unknown error', filename);
+            if (response.status !== 409) {
+                const error = await response.json();
+                console.warn('⚠ Cleanup failed (non-critical):', error.error || 'Unknown error', filename);
+            }
         }
     } catch (e) {
         // Silent fail - cleanup errors shouldn't disrupt user experience
