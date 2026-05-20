@@ -268,6 +268,17 @@ def register_info_endpoints(
 
             url = deps.sanitize_input(url, max_length=2048)
 
+            # Fix SoundCloud 404 errors by stripping tracking parameters
+            if 'soundcloud.com' in url and 'utm_' in url:
+                try:
+                    from urllib.parse import urlparse, urlunparse, parse_qs, urlencode
+                    parsed = urlparse(url)
+                    q = parse_qs(parsed.query)
+                    q = {k: v for k, v in q.items() if not k.startswith('utm_')}
+                    url = urlunparse((parsed.scheme, parsed.netloc, parsed.path, parsed.params, urlencode(q, doseq=True), parsed.fragment))
+                except Exception:
+                    pass
+
             # Interceptar Spotify y usar oEmbed para tracks (Híbrido) o spotdl para playlists
             if 'spotify.com' in url:
                 return _handle_spotify_info(url, offset, limit, deps)

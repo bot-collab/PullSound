@@ -803,6 +803,16 @@ def process_download(task):
         update_task_progress(task_id, 'preparing', 5, 'Preparando descarga...')
         url = task.url
         
+        if 'soundcloud.com' in url and 'utm_' in url:
+            try:
+                from urllib.parse import urlparse, urlunparse, parse_qs, urlencode
+                parsed = urlparse(url)
+                q = parse_qs(parsed.query)
+                q = {k: v for k, v in q.items() if not k.startswith('utm_')}
+                url = urlunparse((parsed.scheme, parsed.netloc, parsed.path, parsed.params, urlencode(q, doseq=True), parsed.fragment))
+            except Exception:
+                pass
+        
         # 3-4. Obtener información del video
         video_info, video_title, duration, clean_title = _get_video_info(task_id, url)
         update_task_progress(task_id, 'info_ready', 7, f'Video: {video_title[:50]}...')

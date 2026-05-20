@@ -83,7 +83,7 @@ YT_DLP_OPTIONS_BASE = {
     },
     'extractor_args': {
         'youtube': {
-            'player_client': ['android', 'web']
+            'player_client': ['web', 'default']
         }
     },
     'noplaylist': True,
